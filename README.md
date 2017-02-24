@@ -15,7 +15,7 @@ it line by line. The table produced is the left hand column of table A3.7.3,
 and you can get the actual samples from the Monte-Carlo in 'lots' which represents
 the number of people (out of 1000) infected at each run.
 
-Increasing the first 1000 in the replicate() function increases the number of
+Increasing the `reps` variable increases the number of
 samples taken. Each one represents an event where 1000 people go to swim in the
 same water body (for differing lengths of time, and ingesting different
 amounts of water) and thus being exposed to the same concentration of

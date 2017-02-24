@@ -55,7 +55,8 @@ sample <- function(n) {
 
 #' Sample lots of times to see how often people get sick, if 1000 people go to
 #' a river or beach
-lots <- replicate(1000, sum(sample(1000)))
+reps <- 10000
+lots <- replicate(reps, sum(sample(1000)))
 
 #' compute percentiles
 knitr::kable(round(quantile(lots, seq(0, 1, by=0.025))))
