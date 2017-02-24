@@ -23,3 +23,7 @@ amounts of water) and thus being exposed to the same concentration of
 is for infection, but not for illness: Some people may get infected with
 *Campylobacter jejuni* but not show symptoms of illness.
 
+Below is a graphical representation of the risk
+
+![Risk of Campylobacter](risk_by_percentile.png)
+

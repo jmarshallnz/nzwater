@@ -61,6 +61,15 @@ lots <- replicate(reps, sum(sample(1000)))
 #' compute percentiles
 knitr::kable(round(quantile(lots, seq(0, 1, by=0.025))))
 
+#' a plot trying to describe the distribution of risk
+e <- environment(ecdf(perc))
+
+#png('risk_by_percentile.png', width=800, height=600)
+plot(e$y*100, e$x, type='n', xlab="Percent of the time", ylab="Percent infected with Campylobacter", xaxs='i', xlim=c(0,100), yaxs='i')
+polygon(c(0,e$y*100,100), c(0,e$x,0), border=NA, col="steelblue")
+title(main="Campylobacter infection risk by percentage of time for NZ freshwater")
+#dev.off()
+
 #' Note if instead we want what would happen to `n` people visiting different sites,
 #' you'd change the `n=1` in the `bin` and `count` lines above to `n` instead. This
 #' basically drops down to the distribution of the mean of the above though.
