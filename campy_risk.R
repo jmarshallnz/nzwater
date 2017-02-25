@@ -107,9 +107,9 @@ ecoli$risk <- c(rep(0,11),1,3,9,18,26,72,131,329)
 
 #' Criteria for blue, green, yellow from:
 #' http://www.mfe.govt.nz/fresh-water/freshwater-management-reforms/water-quality-swimming-maps/developing-water-quality
-cat = list(blue = data.frame(percentile=c(50, 80, 95), count=c(130, 260, 540)),
-           green = data.frame(percentile=c(50,70,90,95), count=c(130,260,540,1000)),
-           yellow = data.frame(percentile=c(50,66,80,95), count=c(130,260,540,1200)))
+cat = list('#36949B' = data.frame(percentile=c(50, 80, 95), count=c(130, 260, 540)),
+           '#7EA948' = data.frame(percentile=c(50,70,90,95), count=c(130,260,540,1000)),
+           '#FACB1E' = data.frame(percentile=c(50,66,80,95), count=c(130,260,540,1200)))
 
 compute_risk <- function(count, percentile) {
   #' Compute corresponding risk
