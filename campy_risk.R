@@ -175,3 +175,36 @@ mtext('Percentage of time', side=1, line=3, at=50, cex=1.5)
 mtext('Percentage of the time NZ rivers/lakes', cex=1.8, line=2.1, font=2)
 mtext(expression(paste(bold('present risk of infection with '), bolditalic(Campylobacter))), cex=1.8, line=0.6, font=2)
 #dev.off()
+
+# and for the old 'A' and 'B' regulations
+
+old <- data.frame(level=c('A', 'B'),
+                colour=c('white', 'white'),
+#                `< 0.1`=c(0,0),
+                `< 1`=c(95,0),
+                `1 - 5`=c(5,95),
+                `> 5`=c(0,5), check.names=FALSE, stringsAsFactors=FALSE)
+
+
+#' reorder for barplot
+d <- old[2:1,]
+
+#' density of lines for risk
+dens = c(5,15,30)
+
+#' draw the plot
+png('old_risk_by_colour.png', width=800, height=350)
+b <- barplot(t(d[,-(1:2)]), horiz=TRUE, names=d$level, las=1, col='black', density=dens, plot=FALSE)
+alpha <- function(col, alpha=0.5) { rgb(t(col2rgb(col)/255), alpha=alpha) }
+source('legendxx.R')
+par(mfrow=c(1,1), mar=c(4,6,4,2), cex=1.5)
+plot(NULL, axes=FALSE, xlim=c(0,130), xaxs='i', xaxt='n', ylim=c(0,max(b)+min(b)), yaxs='i', yaxt='n', xlab="", ylab="")
+rect(xl=c(0,0,0),yb=b-0.5,xr=rep(100,3),yt=b+0.5, col=alpha(d$colour, 0.7), border=NA)
+barplot(t(d[,-(1:2)]), horiz=TRUE, names=d$level, las=1, col='black', density=dens, add=TRUE, xaxt='n')
+axis(1, at=seq(0,100,by=20))
+legend(105,2.25,legend=names(d[,-(1:2)]), density=dens, bty='n', box.cex = c(2,1.8), y.intersp = 2)
+text(110,2.28, "Risk (%)", cex=1.2, adj=c(0,0))
+mtext('Percentage of time', side=1, line=3, at=50, cex=1.5)
+mtext('Percentage of the time NZ rivers/lakes', cex=1.8, line=2.1, font=2)
+mtext(expression(paste(bold('present risk of infection with '), bolditalic(Campylobacter))), cex=1.8, line=0.6, font=2)
+dev.off()
