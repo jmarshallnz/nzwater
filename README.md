@@ -26,5 +26,7 @@ is for infection, but not for illness: Some people may get infected with
 Below is a graphical representation of the risk of *Campylobacter* using the
 new blue, green, yellow colour coding that designate 'swimmable' rivers.
 
+![Risk of Campylobacter](stacked_risk_by_colour.png)
+
 ![Risk of Campylobacter](risk_by_colour.png)
 
