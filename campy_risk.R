@@ -143,3 +143,35 @@ for(i in seq_along(cat)) {
     title(main="Percentage of the time NZ rivers/lakes\npresent risk of infection with Campylobacter", outer=TRUE)
 }
 #dev.off()
+
+#' Alternate stacked bar chart that's more rounded
+d <- data.frame(level=c('Excellent', 'Good', 'Fair'),
+                colour=c('#36949B', '#7EA948', '#FACB1E'),
+                `< 0.1`=c(50,50,50),
+                `0.1 - 1`=c(30,20,16),
+                `1 - 5`=c(15,20,14),
+                `5 - 15`=c(5,6,12),
+                `> 15`=c(0,4,8), check.names=FALSE, stringsAsFactors=FALSE)
+
+#' reorder for barplot
+d <- d[3:1,]
+
+#' density of lines for risk
+dens = c(0,5,15,30,80)
+
+#' draw the plot
+#png('stacked_risk_by_colour.png', width=800, height=450)
+b <- barplot(t(d[,-(1:2)]), horiz=TRUE, names=d$level, las=1, col='black', density=dens, plot=FALSE)
+alpha <- function(col, alpha=0.5) { rgb(t(col2rgb(col)/255), alpha=alpha) }
+source('legendxx.R')
+par(mfrow=c(1,1), mar=c(4,6,4,2), cex=1.5)
+plot(NULL, axes=FALSE, xlim=c(0,130), xaxs='i', xaxt='n', ylim=c(0,max(b)+min(b)), yaxs='i', yaxt='n', xlab="", ylab="")
+rect(xl=c(0,0,0),yb=b-0.5,xr=rep(100,3),yt=b+0.5, col=alpha(d$colour, 0.7), border=NA)
+barplot(t(d[,-(1:2)]), horiz=TRUE, names=d$level, las=1, col='black', density=dens, add=TRUE, xaxt='n')
+axis(1, at=seq(0,100,by=20))
+legend(105,3.38,legend=names(d[,-(1:2)]), density=dens, bty='n', box.cex = c(2,1.8), y.intersp = 2)
+text(110,3.40, "Risk (%)", cex=1.2, adj=c(0,0))
+mtext('Percentage of time', side=1, line=3, at=50, cex=1.5)
+mtext('Percentage of the time NZ rivers/lakes', cex=1.8, line=2.1, font=2)
+mtext(expression(paste(bold('present risk of infection with '), bolditalic(Campylobacter))), cex=1.8, line=0.6, font=2)
+#dev.off()
