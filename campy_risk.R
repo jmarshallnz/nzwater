@@ -102,6 +102,8 @@ ecoli <- data.frame(percentile=seq(5,95,by=5),
                             154,191,261,332,461,613,980,1986))
 
 ecoli$risk <- quantile(lots, seq(0.05, 0.95, by=0.05))
+# alternate risk from McBride, as above isn't quite right...
+ecoli$risk <- c(rep(0,11),1,3,9,18,26,72,131,329)
 
 #' Criteria for blue, green, yellow from:
 #' http://www.mfe.govt.nz/fresh-water/freshwater-management-reforms/water-quality-swimming-maps/developing-water-quality
@@ -112,8 +114,8 @@ cat = list(blue = data.frame(percentile=c(50, 80, 95), count=c(130, 260, 540)),
 compute_risk <- function(count, percentile) {
   #' Compute corresponding risk
   risk = approx(ecoli$count, ecoli$risk, xout = count)$y
-  perc = round(risk / 1000 * 100, 1)
-  
+  perc = pmax(round(risk / 1000 * 100, 1), 0.1)
+
   labs = c(paste0("<",perc[1]), paste0(perc[-length(perc)],'-',perc[-1]), paste0(">",perc[length(perc)]))
   
   integrated_risk = c(perc[1]/2,(perc[-length(perc)]+perc[-1])/2,perc[length(perc)])
