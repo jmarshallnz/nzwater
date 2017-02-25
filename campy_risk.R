@@ -89,3 +89,55 @@ title(main="Percentage of the time NZ rivers/lakes\npresent risk of infection wi
 #' but it does mean for 95% of the time your risk would be at most 2.4%. We don't know
 #' about the last 5% and that is where risk is known to be more than 2.4%, and perhaps
 #' much more given the skewness of the distribution.
+
+#' An attempt for matching E. coli distributions follows. Using E. coli
+#' distributions from
+#' 
+#' http://www.mfe.govt.nz/sites/default/files/freshwater-microbiology-nov02.pdf
+#'
+#' Tables A3.7.3 and A3.3.2
+
+ecoli <- data.frame(percentile=seq(5,95,by=5),
+                    count=c(4,9,14,32,29,40,51,66,91,110,131,
+                            154,191,261,332,461,613,980,1986))
+
+ecoli$risk <- quantile(lots, seq(0.05, 0.95, by=0.05))
+
+#' Criteria for blue, green, yellow from:
+#' http://www.mfe.govt.nz/fresh-water/freshwater-management-reforms/water-quality-swimming-maps/developing-water-quality
+cat = list(blue = data.frame(percentile=c(50, 80, 95), count=c(130, 260, 540)),
+           green = data.frame(percentile=c(50,70,90,95), count=c(130,260,540,1000)),
+           yellow = data.frame(percentile=c(50,66,80,95), count=c(130,260,540,1200)))
+
+compute_risk <- function(count, percentile) {
+  #' Compute corresponding risk
+  risk = approx(ecoli$count, ecoli$risk, xout = count)$y
+  perc = round(risk / 1000 * 100, 1)
+  
+  labs = c(paste0("<",perc[1]), paste0(perc[-length(perc)],'-',perc[-1]), paste0(">",perc[length(perc)]))
+  
+  integrated_risk = c(perc[1]/2,(perc[-length(perc)]+perc[-1])/2,perc[length(perc)])
+  return(list(risk=labs, percent=diff(c(0,percentile,100)), irisk=integrated_risk))
+}
+
+#png("risk_by_colour.png", width=600, height=600)
+par(mfrow=c(3,1), mar=c(5,4,2,2), oma=c(0,0,2,0), cex=1)
+#title(main="Percentage of the time NZ rivers/lakes\npresent risk of infection with Campylobacter")
+for(i in seq_along(cat)) {
+  risk <- compute_risk(cat[[i]]$count, cat[[i]]$percentile)
+  avg_risk <- sum(risk$percent * risk$irisk/100)
+  if (i == 1) {
+    risk$percent = c(risk$percent, NA)
+    risk$risk = c(risk$risk, NA)
+  }
+  barplot(risk$percent, names=risk$risk,
+          xlab='Risk (% people infected)',
+          ylab='% of time',
+          col=names(cat)[i], las=1)
+  legend('topright',
+         legend=paste0('Risk across all time: ',round(avg_risk,1),'%'),
+         bty="n")
+  if (i == 1)
+    title(main="Percentage of the time NZ rivers/lakes\npresent risk of infection with Campylobacter", outer=TRUE)
+}
+#dev.off()
