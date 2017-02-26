@@ -176,6 +176,28 @@ mtext('Percentage of the time NZ rivers/lakes', cex=1.8, line=2.1, font=2)
 mtext(expression(paste(bold('present risk of infection with '), bolditalic(Campylobacter))), cex=1.8, line=0.6, font=2)
 #dev.off()
 
+#' estimate of total risk contribution of each class.
+#' this uses the midpoint of each category, where we have it, i.e.
+#' it assumes linearly increasing risk, which is not right, but
+#' probably close-enough for a first guess. For the last category
+#' where we don't have an upper bound on risk, we assume it's the
+#' maximal risk of 25, slightly more conservative than the results
+#' from McBride et. al.
+risk_cat <- c(0,0.1,1,5,15,25)
+avg_risk <- (risk_cat[-1] + risk_cat[-length(risk_cat)])/2
+
+# I think we're after river percentile vs risk percentile
+prop_risk <- rbind(rep(0,3),apply(d[,3:7],1,function(x) {z = x * avg_risk; z/sum(z)*100 }))
+risk_perc <- rbind(rep(0,3), apply(d[,3:7], 1, cumsum))
+
+#png('risk_percentiles.png', width=800, height=600)
+par(cex=1.5)
+plot(prop_risk ~ risk_perc, type='n', xaxs='i', yaxs='i', xlab="Percentage of time", ylab="Percentage of infections")
+for (i in 1:3)
+  lines(risk_perc[,i], prop_risk[,i], col=d$colour[i], lwd=2)
+title("Most infections occur in the 20% of time that\nrivers are most contaminated")
+#dev.off()
+
 # and for the old 'A' and 'B' regulations
 
 old <- data.frame(level=c('A', 'B'),
